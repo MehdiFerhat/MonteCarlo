@@ -1,35 +1,7 @@
 # Projections de points MC et QMC sur Aire Fonction de Masse
 
-import numpy as np
-import scipy.stats as ssp
-import matplotlib.pyplot as plt
 
-num_sample = 1000
-U = np.random.uniform(size=num_sample)
-S = ssp.qmc.Sobol(d=1).random(num_sample).reshape(num_sample)
-n = 1200
-p = 0.25
-x = 270
-
-def Bino(u, n=n, p=p):
-    proba = np.array([ssp.binom.pmf(k, n=n, p=p) for k in range(n + 1)])
-
-    return np.searchsorted(np.cumsum(proba), u)
-
-
-Bino_alea = Bino(U)
-Bino_non_alea = Bino(S)
-
-Proba_Monte_Carlo = sum(Bino_alea <= x) / num_sample
-Proba_Quasi_Monte_Carlo = sum(Bino_non_alea <= x) / num_sample
-Proba_numpy = sum(np.random.binomial(n=n, p=p, size=num_sample) <= x) / num_sample
-Vraie_Proba = ssp.binom.cdf(x, n=n, p=p)
-
-print("Proba MC = {PMC}".format(PMC=Proba_Monte_Carlo))
-print("Proba QMC = {PQMC}".format(PQMC=Proba_Quasi_Monte_Carlo))
-print("Proba Np = {Np}".format(Np=Proba_numpy))
-print("Vraie  = {VP}".format(VP=Vraie_Proba))
-
+# On considère l'événement est un homme avec p = 0.25, on veut capturer la probabilité qu'il y ait - de 270 hommes dans une foule de 1200 personnes :
 
 # MC Uniforme
 import numpy as np
@@ -55,6 +27,7 @@ print(len(total) / num_sample)
 
 
 # QMC avec Sobol
+
 import scipy.stats as ssp
 import numpy as np
 import random
@@ -132,7 +105,7 @@ def monte_carlo_sobol(f, a, b, n_iterations):
 resultat = monte_carlo_sobol(f, 0, 1, 10000)
 print(resultat)
 
-# Intégrale avec une suite random
+# Intégrale avec une suite simple
 def f(u):
     return np.cos(u)**2 * np.exp(np.sin(u**2)) * np.tan(u)
 def monte_carlo_random(f, a, b, n_iterations):
@@ -146,8 +119,7 @@ def monte_carlo_random(f, a, b, n_iterations):
 resultat = monte_carlo_random(f, 0, 1, 10000)
 print(resultat)
 
-
-# TCL
+# Visualisation TCL
 import numpy as np
 
 results = []
@@ -158,7 +130,3 @@ for i in tqdm(range(n)):
 
 plt.hist(results)
 plt.show()
-
-
-sl = [1,2,2,3,3,3,4,4,4,4,3]
-
